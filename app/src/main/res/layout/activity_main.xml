@@ -29,7 +29,7 @@
         android:layout_gravity="top|end"
         android:layout_margin="40dp"
         android:background="@drawable/bg_channel_number"
-        android:padding="16dp 24dp"
+        android:padding="16dp"
         android:textColor="@color/white"
         android:textSize="48sp"
         android:textStyle="bold"
@@ -43,7 +43,7 @@
         android:layout_gravity="top|start"
         android:layout_margin="20dp"
         android:background="@drawable/bg_info"
-        android:padding="8dp 16dp"
+        android:padding="8dp"
         android:textColor="@color/speed_color"
         android:textSize="@dimen/text_size_small"
         android:visibility="gone" />
@@ -56,7 +56,7 @@
         android:layout_gravity="top|end"
         android:layout_margin="20dp"
         android:background="@drawable/bg_info"
-        android:padding="8dp 16dp"
+        android:padding="8dp"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_small"
         android:visibility="gone" />
