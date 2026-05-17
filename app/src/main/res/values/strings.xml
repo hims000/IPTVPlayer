@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">IPTV Player</string>
+    <string name="menu_settings">设置</string>
+    <string name="menu_exit">退出</string>
+    <string name="setting_source">网页源设置</string>
+    <string name="setting_engine">浏览器内核</string>
+    <string name="setting_show_speed">显示网速</string>
+    <string name="setting_show_time">显示时间</string>
+    <string name="setting_epg">EPG设置</string>
+    <string name="setting_logo">台标设置</string>
+    <string name="channel_list">选台列表</string>
+    <string name="loading">加载中...</string>
+    <string name="no_channel">暂无频道</string>
+    <string name="system_webview">系统 WebView</string>
+    <string name="x5_engine">腾讯 X5 内核</string>
+    <string name="custom_engine">外置内核</string>
+    <string name="select_engine">选择浏览器内核</string>
+    <string name="input_url">输入网页源地址</string>
+    <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
+    <string name="back_to_exit">再按一次返回键退出</string>
+</resources>
