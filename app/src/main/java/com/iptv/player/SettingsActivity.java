@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,16 +17,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PICK_ENGINE = 1001;
-    private static final int REQUEST_CODE_PICK_SOURCE = 1002;
 
     private PreferenceManager prefs;
     private LinearLayout settingSource;
@@ -119,7 +115,6 @@ public class SettingsActivity extends AppCompatActivity {
         settingEpg.setOnClickListener(v -> showEpgDialog());
         settingLogo.setOnClickListener(v -> showLogoDialog());
 
-        // Set initial focus
         settingSource.requestFocus();
     }
 
@@ -129,7 +124,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         final EditText input = new EditText(this);
         input.setText(prefs.getSourceUrl());
-        input.setHint("https://example.com/iptv.html");
+        input.setHint("https://example.com/iptv.html 或 JSON/M3U 源地址");
         int padding = (int) (16 * getResources().getDisplayMetrics().density);
         input.setPadding(padding, padding, padding, padding);
         builder.setView(input);
@@ -138,24 +133,27 @@ public class SettingsActivity extends AppCompatActivity {
             String url = input.getText().toString().trim();
             prefs.setSourceUrl(url);
             sourceUrlText.setText(url.isEmpty() ? "未设置" : url);
-            // Parse and save channels from URL if needed
+
             if (!url.isEmpty()) {
-                parseChannelsFromUrl(url);
+                // 解析并保存频道列表
+                ChannelSourceParser.parseSource(this, url, new ChannelSourceParser.ParseCallback() {
+                    @Override
+                    public void onSuccess(List<Channel> channels) {
+                        prefs.setChannelList(new Gson().toJson(channels));
+                        runOnUiThread(() -> Toast.makeText(SettingsActivity.this, 
+                            "已更新 " + channels.size() + " 个频道", Toast.LENGTH_SHORT).show());
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        runOnUiThread(() -> Toast.makeText(SettingsActivity.this, 
+                            "解析失败: " + error, Toast.LENGTH_LONG).show());
+                    }
+                });
             }
         });
         builder.setNegativeButton(R.string.cancel, null);
         builder.show();
-    }
-
-    private void parseChannelsFromUrl(String url) {
-        // In a real app, this would fetch and parse M3U or JSON
-        // For now, we create a simple demo list
-        List<Channel> list = new ArrayList<>();
-        list.add(new Channel("频道 1", url, "", "", 1));
-        list.add(new Channel("频道 2", url, "", "", 2));
-        list.add(new Channel("频道 3", url, "", "", 3));
-        prefs.setChannelList(new Gson().toJson(list));
-        Toast.makeText(this, "已更新频道列表", Toast.LENGTH_SHORT).show();
     }
 
     private void showEngineSelector() {
@@ -181,7 +179,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void pickCustomEngine() {
-        // Open file picker to select custom browser engine directory
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         intent.addCategory(Intent.CATEGORY_DEFAULT);
         startActivityForResult(intent, REQUEST_CODE_PICK_ENGINE);
@@ -193,7 +190,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         final EditText input = new EditText(this);
         input.setText(prefs.getEpgUrl());
-        input.setHint("EPG XML 地址");
+        input.setHint("EPG XML 地址 (可选)");
         int padding = (int) (16 * getResources().getDisplayMetrics().density);
         input.setPadding(padding, padding, padding, padding);
         builder.setView(input);
@@ -213,7 +210,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         final EditText input = new EditText(this);
         input.setText(prefs.getLogoUrl());
-        input.setHint("台标基础 URL");
+        input.setHint("台标基础 URL (可选)");
         int padding = (int) (16 * getResources().getDisplayMetrics().density);
         input.setPadding(padding, padding, padding, padding);
         builder.setView(input);

@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
@@ -135,6 +136,20 @@ public class MainActivity extends AppCompatActivity {
         webViewContainer.addView(webView, new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
+        // 禁用 WebView 点击事件，防止误触网页元素
+        webView.setOnTouchListener((v, event) -> {
+            // 只拦截点击事件（ACTION_UP），允许其他触摸事件通过
+            if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_DOWN) {
+                // 如果菜单或选台列表打开，不拦截
+                if (isMenuOpen || isChannelListOpen) {
+                    return false;
+                }
+                // 拦截网页点击，防止触发网页上的按钮/链接
+                return true;
+            }
+            return false;
+        });
+
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
         settings.setDomStorageEnabled(true);
@@ -155,6 +170,18 @@ public class MainActivity extends AppCompatActivity {
                     loadingIndicator.setVisibility(View.GONE);
                 }
             }
+        });
+
+        // 禁用 WebView 触摸点击，防止误触
+        webView.setOnTouchListener((v, event) -> {
+            // 只允许触摸事件通过，但消费掉点击事件
+            if (event.getAction() == MotionEvent.ACTION_DOWN || 
+                event.getAction() == MotionEvent.ACTION_UP ||
+                event.getAction() == MotionEvent.ACTION_MOVE) {
+                // 返回 true 表示消费事件，不传递给网页
+                return true;
+            }
+            return false;
         });
 
         webView.setWebViewClient(new WebViewClient() {
