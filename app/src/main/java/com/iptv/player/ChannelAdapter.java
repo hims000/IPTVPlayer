@@ -9,8 +9,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
-
 import java.util.List;
 
 public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHolder> {
@@ -41,10 +39,9 @@ public class ChannelAdapter extends RecyclerView.Adapter<ChannelAdapter.ViewHold
         holder.name.setText(channel.getName());
         holder.epg.setText(channel.getEpg() != null ? channel.getEpg() : "");
 
-        if (channel.getLogo() != null && !channel.getLogo().isEmpty()) {
-            // 使用简单的占位，实际项目中可使用 Glide
-            // Glide.with(holder.itemView).load(channel.getLogo()).into(holder.logo);
-        }
+        // 台标加载 - 使用简单的占位，不依赖 Glide
+        // 如需加载网络图片，建议使用 Glide 或 Coil，但需要在 build.gradle 中添加依赖
+        holder.logo.setVisibility(View.GONE);
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
