@@ -218,7 +218,7 @@ public class ChannelSourceParser {
     }
 
     private static String extractAttribute(String line, String attr) {
-        String pattern = attr + "="";
+        String pattern = attr + "=\";
         int start = line.indexOf(pattern);
         if (start >= 0) {
             start += pattern.length();
